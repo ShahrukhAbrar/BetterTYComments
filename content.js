@@ -92,6 +92,8 @@
     mutationObserver.observe(document.body, { childList: true, subtree: true });
   }
 
+  observeNavigation();
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => { if (enabled) init(); });
   } else {

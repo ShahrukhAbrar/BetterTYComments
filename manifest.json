@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Better YouTube Portrait Comments",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Makes the YouTube comments section a fixed, independently scrollable panel so you can read comments without scrolling the video as well in portrait screen orientation.",
   "author": "Shahrukh Abrar",
   "icons": {
@@ -36,7 +36,13 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "abrarshahrukh@proton.me",
-      "strict_min_version": "58.0"
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ],
+        "optional": []
+      }
     }
   }
 }
