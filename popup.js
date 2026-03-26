@@ -14,12 +14,12 @@ toggle.addEventListener('change', () => {
   browser.storage.local.set({ enabled });
   updateUI(enabled);
 
-  browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
-    if (tabs[0]) {
-      browser.tabs.sendMessage(tabs[0].id, { type: 'TOGGLE', enabled }).catch(() => {
+  browser.tabs.query({ url: "*://www.youtube.com/*" }).then(tabs => {
+    tabs.forEach(tab => {
+      browser.tabs.sendMessage(tab.id, { type: 'TOGGLE', enabled }).catch(() => {
         reloadNote.classList.add('visible');
       });
-    }
+    });
   });
 });
 

@@ -3,6 +3,7 @@
 
   let enabled = true;
   let mutationObserver = null;
+  let commentsObserver = null;
 
   browser.storage.local.get('enabled').then(result => {
     enabled = result.enabled !== false;
@@ -16,30 +17,43 @@
     }
   });
 
+  browser.storage.onChanged.addListener((changes) => {
+    if (changes.enabled) {
+      enabled = changes.enabled.newValue;
+      enabled ? init() : destroy();
+    }
+  });
+
   function isWatchPage() {
     return window.location.pathname === '/watch';
   }
 
-  function init() {
-    if (!isWatchPage()) return;
-    waitForElement('ytd-comments#comments', applyScrollable);
-    observeNavigation();
+  function isShortsPage() {
+    return window.location.pathname.startsWith('/shorts/');
   }
 
-  function waitForElement(selector, callback, timeout = 15000) {
-    const el = document.querySelector(selector);
-    if (el) { callback(el); return; }
-    const start = Date.now();
-    const obs = new MutationObserver(() => {
-      const found = document.querySelector(selector);
-      if (found) { obs.disconnect(); callback(found); }
-      else if (Date.now() - start > timeout) obs.disconnect();
+  function init() {
+    if (!isWatchPage() || isShortsPage()) return;
+
+    const existing = document.querySelector('ytd-comments#comments');
+    if (existing) applyScrollable(existing);
+
+    if (commentsObserver) commentsObserver.disconnect();
+    commentsObserver = new MutationObserver(() => {
+      const comments = document.querySelector('ytd-comments#comments');
+      if (comments && !comments.dataset.ytscActive) {
+        applyScrollable(comments);
+      }
     });
-    obs.observe(document.body, { childList: true, subtree: true });
+    commentsObserver.observe(document.body, { childList: true, subtree: true });
+
+    observeNavigation();
   }
 
   function applyScrollable(comments) {
     if (comments.dataset.ytscActive) return;
+    if (isShortsPage()) return;
+
     comments.dataset.ytscActive = 'true';
 
     const wrapper = document.createElement('div');
@@ -49,6 +63,11 @@
   }
 
   function destroy() {
+    if (commentsObserver) {
+      commentsObserver.disconnect();
+      commentsObserver = null;
+    }
+
     const wrapper = document.querySelector('#ytsc-wrapper');
     if (wrapper) {
       const comments = wrapper.querySelector('ytd-comments#comments');
@@ -61,14 +80,13 @@
   }
 
   function observeNavigation() {
+    if (mutationObserver) return;
     let lastUrl = location.href;
     mutationObserver = new MutationObserver(() => {
       if (location.href !== lastUrl) {
         lastUrl = location.href;
         destroy();
-        if (enabled && isWatchPage()) {
-          setTimeout(() => init(), 1500);
-        }
+        if (enabled) setTimeout(() => init(), 1500);
       }
     });
     mutationObserver.observe(document.body, { childList: true, subtree: true });
