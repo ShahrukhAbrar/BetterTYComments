@@ -1,0 +1,46 @@
+name: Build and Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Firefox extension
+        run: bash build.sh firefox
+
+      - name: Build Chrome extension
+        run: bash build.sh chrome
+
+      - name: Zip Firefox extension
+        run: zip -r BetterYTComments-Firefox-${{ github.ref_name }}.zip dist-firefox/
+
+      - name: Zip Chrome extension
+        run: zip -r BetterYTComments-Chrome-${{ github.ref_name }}.zip dist-chrome/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## Better YouTube Portrait Comments ${{ github.ref_name }}
+
+            ### Downloads
+            - **Firefox** — install via `BetterYTComments-Firefox-${{ github.ref_name }}.zip`
+            - **Chrome / Edge** — install via `BetterYTComments-Chrome-${{ github.ref_name }}.zip`
+
+            ### How to install (unpacked)
+            **Firefox:** `about:debugging` → This Firefox → Load Temporary Add-on
+            **Chrome:** `chrome://extensions` → Developer Mode → Load unpacked
+          files: |
+            BetterYTComments-Firefox-${{ github.ref_name }}.zip
+            BetterYTComments-Chrome-${{ github.ref_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
