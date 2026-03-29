@@ -10,37 +10,24 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://www.youtube.com/*"
-      ],
-      "js": [
-        "content.js"
-      ],
-      "css": [
-        "comments.css"
-      ],
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["browser-polyfill.js", "content.js"],
+      "css": ["comments.css"],
       "run_at": "document_idle"
     }
   ],
   "browser_action": {
-    "default_icon": {
-      "48": "icons/icon48.png"
-    },
+    "default_icon": { "48": "icons/icon48.png" },
     "default_popup": "popup.html",
     "default_title": "Better YouTube Portrait Comments"
   },
-  "permissions": [
-    "storage",
-    "activeTab"
-  ],
+  "permissions": ["storage", "activeTab"],
   "browser_specific_settings": {
     "gecko": {
       "id": "abrarshahrukh@proton.me",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
-        "required": [
-          "none"
-        ],
+        "required": ["none"],
         "optional": []
       }
     }

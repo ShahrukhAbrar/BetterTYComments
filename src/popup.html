@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YT Scrollable Comments</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 280px;
+      background: #0f0f0f;
+      color: #f1f1f1;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #181818;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      font-size: 22px;
+    }
+
+    .header-text h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: #fff;
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .body {
+      padding: 16px 18px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e0e0e0;
+    }
+
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      width: 42px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #333;
+      border-radius: 24px;
+      transition: background 0.2s;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #888;
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    input:checked+.slider {
+      background: #ff0000;
+    }
+
+    input:checked+.slider::before {
+      transform: translateX(18px);
+      background: #fff;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .status-badge.on {
+      background: rgba(255, 0, 0, 0.12);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 0, 0, 0.2);
+    }
+
+    .status-badge.off {
+      background: rgba(255, 255, 255, 0.05);
+      color: #666;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      margin: 12px 0;
+    }
+
+    .tip {
+      font-size: 11px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .tip strong {
+      color: #888;
+      font-weight: 600;
+    }
+
+    .reload-note {
+      margin-top: 10px;
+      background: rgba(255, 200, 0, 0.06);
+      border: 1px solid rgba(255, 200, 0, 0.12);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      color: #aa9940;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .reload-note.visible {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="logo">💬</div>
+    <div class="header-text">
+      <h1>Scrollable Comments</h1>
+      <p>YouTube Comments Panel</p>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="toggle-row">
+      <span class="toggle-label">Enable Panel</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle" checked />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div id="status" class="status-badge on">
+      <span class="dot"></span>
+      <span id="status-text">Active</span>
+    </div>
+
+    <hr class="divider" />
+
+    <div id="reload-note" class="reload-note">
+      Reload the YouTube tab for changes to take effect.
+    </div>
+  </div>
+
+  <script src="browser-polyfill.js"></script>
+  <script src="popup.js"></script>
+</body>
+
+</html>
